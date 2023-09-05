@@ -1,6 +1,8 @@
-import {screen} from '@testing-library/react'
+import {screen, fireEvent} from '@testing-library/react'
+import * as reactRedux from 'react-redux'
 import Navigation from '../navigation.component'
 import { renderWithProviders } from '../../../utils/__tests__/test.utils'
+import { signOutStart } from '../../../store/user/user.action'
 
 describe('Navigation Tests', () => {
     test('it should render a sign In Link and not a sign out if there is no current user', () => {
@@ -63,6 +65,27 @@ describe('Navigation Tests', () => {
         }
         const dropDownTextElement = screen.getByText(/your cart is empty/i);
         expect(dropDownTextElement).toBeInTheDocument()
+    });
+
+    test('it should dispatch signOutStart action when clicking on the sign Out Link', async() => {
+        const mockDispatch = jest.fn();
+        jest.spyOn(reactRedux, 'useDispatch').mockReturnValue(mockDispatch)
+        
+        renderWithProviders(<Navigation />, {
+            preLoadState: {
+                user: {
+                    currentUser: {}
+                }
+            }
+        } )
+        const signOutLinkElement = screen.getByText(/sign out/i);
+        expect(signOutLinkElement).toBeInTheDocument()
+       
+        await fireEvent.click(signOutLinkElement)
+        expect(mockDispatch).toHaveBeenCalled()
+        expect(mockDispatch).toHaveBeenCalledWith(signOutStart())
+        mockDispatch.mockClear();
     })
+
 
 })

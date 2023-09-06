@@ -5,7 +5,6 @@ import {
 
 import {
 fetchCategoriesStart,
-FetchCategoriesFailed,
 fetchCategoriesSuccess,
 fetchCategoriesFailed,
 } from '../category.action'
